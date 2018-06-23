@@ -1,0 +1,13 @@
+{
+"companyName": "BMPixel",
+"productName": "坦克小队",
+"dataUrl": "WEB.data.unityweb",
+"asmCodeUrl": "WEB.asm.code.unityweb",
+"asmMemoryUrl": "WEB.asm.memory.unityweb",
+"asmFrameworkUrl": "WEB.asm.framework.unityweb",
+"TOTAL_MEMORY": 268435456,
+"graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20"
+}
