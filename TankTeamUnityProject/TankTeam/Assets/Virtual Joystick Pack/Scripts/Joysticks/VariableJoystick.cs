@@ -60,7 +60,7 @@ public class VariableJoystick : Joystick
     {
         if (!isFixed)
         {
-            background.gameObject.SetActive(false);
+            //background.gameObject.SetActive(false);
         }
         inputVector = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
@@ -77,6 +77,5 @@ public class VariableJoystick : Joystick
     void OnFloat()
     {
         handle.anchoredPosition = Vector2.zero;
-        background.gameObject.SetActive(false);
     }
 }

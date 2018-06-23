@@ -22,11 +22,15 @@ public class PlayerController : TankController
             BattleManager.GetTeam(team.id).Flush(); // apply Camera location
             Camera.main.SendMessage("Catch");
             if(TouchController.tc.moveJoystick != null && TouchController.tc.moveJoystick.inputVector != Vector2.zero){
-                return (((TouchController.tc.moveJoystick.inputVector.normalized*10) + team.centerPoint)
+                return (((TouchController.tc.moveJoystick.inputVector.normalized*50) + team.centerPoint)
              - (Vector2)transform.position).normalized;
             }
-            return (((new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical")).normalized*10) + team.centerPoint)
-             - (Vector2)transform.position).normalized;
+            if(Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            {
+                return (((new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical")).normalized*10) + team.centerPoint)
+                - (Vector2)transform.position).normalized;
+            }
+            return Vector2.zero;
         }
     }
 
