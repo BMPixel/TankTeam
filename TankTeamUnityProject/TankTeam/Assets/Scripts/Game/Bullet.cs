@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour {
 	private int teamId;
 	private int damage;
 	private float bornTime;
-	public float lifeTime = 1; // the lifetime of the bullet in frame
+	public float lifeTime = 1; // the lifetime of the Bullet in frame
 
 
 	// Use this for initialization

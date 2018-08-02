@@ -28,7 +28,7 @@ public class FunctionBtn : MonoBehaviour {
 	}
 
 	public void Debug_TeamMate(){
-		BattleManager.PlaceATank("TankNormal",BattleManager.playerTeam);
+		BattleManager.PlaceATank("TankMissile",BattleManager.playerTeam);
 	}
 
 	public void Debug_Enemy(){

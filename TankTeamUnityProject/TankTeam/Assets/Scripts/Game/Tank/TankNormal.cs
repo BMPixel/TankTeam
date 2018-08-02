@@ -30,11 +30,12 @@ public class TankNormal : Tank
   	protected override void Fire()
   	{
 		if(Time.fixedTime - fireTime > fireCD){
-			fireTime = Time.fixedTime;
+			fireTime = Time.fixedTime - Random.value * fireCD;
 			//Debug.Log(string.Format("TankNormal:{0} Fight!",name));
 			Bullet b = Bullet.GetBullet();
 			SendMessage("RenderFire");
-			b.Init(teamId,fireDamage,tc.toward*10 + tc.direction*tc.maxSpeed,transform.position);
+			//b.Init(teamId,fireDamage,tc.toward*10 + tc.direction*tc.maxSpeed,transform.position);
+			b.Init(teamId,fireDamage,tc.toward*10,transform.position);
 		}
   	}
 

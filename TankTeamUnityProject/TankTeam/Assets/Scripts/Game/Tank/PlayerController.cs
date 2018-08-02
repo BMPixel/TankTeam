@@ -63,8 +63,8 @@ public class PlayerController : TankController
                 SendMessage("Action");
             }
         }
-        if(team.money >= 25){
-            BattleManager.BuyATank(team.id,"TankNormal");
+        if(team.money >= 100){
+            BattleManager.BuyATank(team.id,"TankMissile");
         }
 	}
 }

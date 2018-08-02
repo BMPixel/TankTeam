@@ -41,12 +41,12 @@ public class BattleManager : MonoBehaviour {
 		teams[0] = new TeamInfo(0,"bmpixel",TeamInfo.ControllType.Player);
 		for (int i = 0; i < 2; i++)
 		{
-			PlaceATank("TankNormal",0);
+			PlaceATank("TankMissile",0);
 		}
-		for (int i = 1; i <= 8; i++)
+		for (int i = 1; i <= 10; i++)
 		{
 			teams[i] = new TeamInfo(i,"AI-"+i,TeamInfo.ControllType.AI);
-			for (int j = 0; j < Random.value*3; j++)
+			for (int j = 0; j < Random.value * 3; j++)
 			{
 				PlaceATank("TankNormal",i);
 			}
