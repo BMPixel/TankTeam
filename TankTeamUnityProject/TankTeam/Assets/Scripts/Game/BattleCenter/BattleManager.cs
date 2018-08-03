@@ -2,11 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A manager class for lifecircle and provide global functions, it's sole in one game!
+/// </summary>
 public class BattleManager : MonoBehaviour {
-
+	/// <summary>
+	/// Used for produce random tankname.
+	/// </summary>
+	/// <value></value>
+	public static string[] TANKNAMES = new string[4]{"TankNormal", "TankMissile" , "TankMercenary", "TankScout"};
 	private static BattleManager ins;
     private static Dictionary<int, TeamInfo> teams;
+	/// <summary>
+	/// A map of all tanks alive in the game
+	/// </summary>
 	public static Dictionary<int, Tank> tanks;
+	/// <summary>
+	/// The index of player's team in {teams}
+	/// </summary>
 	public static int playerTeam = -1;
 
 	public static int teamsCount{
@@ -16,12 +29,6 @@ public class BattleManager : MonoBehaviour {
 	}
 
 	private List<int> tempInts;
-
-    public static TeamInfo GetTeam(int id){
-		if(teams.ContainsKey(id))
-			return teams[id];
-		return null;
-	}
 
 	void Awake () {
 		tempInts = new List<int>(100);
@@ -38,11 +45,16 @@ public class BattleManager : MonoBehaviour {
 	}
 
 	public void Start(){
+		/* make player team */
 		teams[0] = new TeamInfo(0,"bmpixel",TeamInfo.ControllType.Player);
+		playerTeam = 0;
 		for (int i = 0; i < 2; i++)
 		{
-			PlaceATank("TankMissile",0);
+			PlaceATank("TankNormal",0);
 		}
+		GetTeam(0).money +=100;
+
+		/* make some enemies */
 		for (int i = 1; i <= 10; i++)
 		{
 			teams[i] = new TeamInfo(i,"AI-"+i,TeamInfo.ControllType.AI);
@@ -56,6 +68,7 @@ public class BattleManager : MonoBehaviour {
 	}
 
 	void Update () {
+		/* Delete all teams with on alive player */
 		tempInts.Clear();
 		foreach (KeyValuePair<int,TeamInfo> team in teams)
 		{
@@ -69,24 +82,54 @@ public class BattleManager : MonoBehaviour {
 			teams.Remove(i);
 			if(i == playerTeam){  // no player
 				playerTeam = -1;
+				ResourcesManager.RequireObject<GameObject>("GameOverUI").SetActive(true);
 			}
 		}
 
-		if(Time.frameCount % 300 == 0){
-			int tid = GetNewTeamId();
-			TeamInfo t = new TeamInfo(tid,"AI-"+tid,TeamInfo.ControllType.AI);
-			NewTeam(t);
-			int n = 5;
-			if(playerTeam != -1){
-				n = teams[playerTeam].members.Count + 2;
-			}
-			for (int i = 0; i < Random.value * n; i++)
-			{
-				PlaceATank("TankNormal", tid);
-			}
+		/* Make a new team each 100frames */
+		if(Time.frameCount % 100 == 0){
+			CreateAnAITeam();
 		}
 	}
 
+    /// <summary>
+    /// From id of teams to teamInfo
+    /// </summary>
+    /// <param name="id">Id of team</param>
+    /// <returns>TeamInfo class intance</returns>
+    public static TeamInfo GetTeam(int id)
+    {
+        if (teams.ContainsKey(id))
+            return teams[id];
+        return null;
+    }
+
+	/// <summary>
+	/// Create a team with some tanks controlled by AI
+	/// </summary>
+	/// <returns>Team's Info</returns>
+	public static TeamInfo CreateAnAITeam(){
+		int tid = GetNewTeamId();
+        TeamInfo t = new TeamInfo(tid, "AI-" + tid, TeamInfo.ControllType.AI);
+        teams[tid] = t;
+        float n = 5;
+        if (playerTeam != -1)
+        {
+            n = Random.value * teams[playerTeam].members.Count;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            PlaceATank(BattleManager.TANKNAMES[Mathf.FloorToInt(Random.value * BattleManager.TANKNAMES.Length)], tid);
+        }
+		return t;
+	}
+
+	/// <summary>
+	/// Create a new tank to battle ground
+	/// </summary>
+	/// <param name="name">Type string of tank e.g "TankMissile"</param>
+	/// <param name="teamId">Create tank for which team</param>
+	/// <returns>The Instance of the tank</returns>
 	public static GameObject PlaceATank(string name, int teamId){
 		TeamInfo team = GetTeam(teamId);
 		if(team == null){
@@ -104,6 +147,10 @@ public class BattleManager : MonoBehaviour {
 		return go;
 	}
 
+	/// <summary>
+	/// Get an unused tank id
+	/// </summary>
+	/// <returns>New tankId</returns>
 	int GetNewTankId(){
 		tempInts.Clear();
 		foreach (KeyValuePair<int,Tank> t in tanks)
@@ -129,6 +176,10 @@ public class BattleManager : MonoBehaviour {
 		return tanks.Count+1;
 	}
 
+	/// <summary>
+	/// Get a new teamId
+	/// </summary>
+	/// <returns>teamId</returns>
 	public static int GetNewTeamId(){
 		for (int i = 0; i < teams.Count+1; i++)
 		{
@@ -141,25 +192,15 @@ public class BattleManager : MonoBehaviour {
 		return teams.Count+1;
 	}
 
-	public static void NewTeam(TeamInfo team){
-		if(GetTeam(team.id) == null)
-			teams[team.id] = team;
-		else{
-			Debug.LogError("A team ahs already exist!!");
-		}
+	/// <summary>
+	/// Before quitting the game
+	/// </summary>
+	public static void Quit(){
+		teams.Clear();
+		tanks.Clear();
+		Bullet.pool.Clear();
+		Missile.pool.Clear();
 	}
 
-	public static bool BuyATank(int tid, string tankName){
-		TeamInfo team = GetTeam(tid);
-		GameObject tank = ResourcesManager.RequireObject<GameObject>(tankName);
-		if(team == null || tank == null){
-			return false;
-		}
-		if(team.money >= (int)(tank.GetComponent<Tank>().strenghIndex * 25)){
-			team.money -= (int)(tank.GetComponent<Tank>().strenghIndex * 25);
-			PlaceATank(tankName,tid);
-			return true;
-		}
-		return false;
-	}
+	
 }

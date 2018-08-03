@@ -28,7 +28,7 @@ public class ResourcesManager : MonoBehaviour {
 		if(dict.ContainsKey(name)){
 			return dict[name] as T;
 		}else{
-			Debug.LogException(new System.Exception("the resource named " + name + " doesnt exist!!"));
+			//Debug.LogException(new System.Exception("the resource named " + name + " doesnt exist!!"));
 			return null;
 		}
 	}

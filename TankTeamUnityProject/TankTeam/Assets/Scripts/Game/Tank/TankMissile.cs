@@ -13,7 +13,7 @@ public class TankMissile : Tank
     {
         get
         {
-            return 3;
+            return 4.5f;
         }
     }
 

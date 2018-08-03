@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The basic for all tank in the game, including its hp, id and so on.
+/// </summary>
 public abstract class Tank : MonoBehaviour
 {
-    private int hp;
-    public int HP
+    private float hp;
+    public float HP
     {
         get
         {
@@ -20,7 +23,7 @@ public abstract class Tank : MonoBehaviour
             }
             else
             {
-                hp = value;
+                hp = Mathf.Min(totalHP, value);
 			    gameObject.BroadcastMessage("setHP",HPPercent);
             }
         }
@@ -37,6 +40,8 @@ public abstract class Tank : MonoBehaviour
         this.tankId = tankId;
         this.teamId = teamId;
         this.leader = leader;
+
+        /* Create control type for it */
         switch (controllType)
         {
             case TeamInfo.ControllType.Player:
@@ -66,16 +71,22 @@ public abstract class Tank : MonoBehaviour
         GameObject tag = null;
         if (leader)
         {
+            /* Set label with name on */
             tag = Instantiate<GameObject>(ResourcesManager.RequireObject<GameObject>("Tag"), transform);
             tag.BroadcastMessage("setText", BattleManager.GetTeam(teamId).name);
         }else
         {
+            /* Label with no names on */
             tag = Instantiate<GameObject>(ResourcesManager.RequireObject<GameObject>("TagNoName"), transform);
         }
+        /* Set hp display in label */
         tag.BroadcastMessage("setHP", HPPercent);
         HP = totalHP;
     }
 
+    /// <summary>
+    /// Die process functions --- only called by the animation on the tank
+    /// </summary>
     private void Die()
     {
         Destroy(gameObject, 1f);
@@ -87,12 +98,25 @@ public abstract class Tank : MonoBehaviour
         get { return (float)HP / (float)totalHP; }
     }
 
+    /// <summary>
+    /// The level of it's power, define by the coder,
+    /// <param>affect the money droped after dying, the price in shop, and wheter enemies are afraid of it</param>
+    /// </summary>
     public abstract float strenghIndex { get; }
 
+    /// <summary>
+    /// Set when the player shots
+    /// </summary>
     protected abstract void Fire();
 
+    /// <summary>
+    /// Set when the tank was just put into battlefield
+    /// </summary>
     protected abstract void FirstShoot();
 
+    /// <summary>
+    /// Set when the player press the skill btn
+    /// </summary>
     protected abstract void Action();
 
 }

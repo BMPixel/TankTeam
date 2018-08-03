@@ -22,10 +22,6 @@ public class TeamInfo{
         name = _name;
         members = new List<Tank>();
         controllType = type;
-        if(type == ControllType.Player)
-        {
-            BattleManager.playerTeam = id;
-        }
         color = new Color(Random.value,Random.value,Random.value);
         centerPoint = SceneRenderingManager.RandomPosition;
     }

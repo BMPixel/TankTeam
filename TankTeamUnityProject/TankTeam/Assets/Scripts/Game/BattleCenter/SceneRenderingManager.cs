@@ -3,37 +3,61 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class SceneRenderingManager : MonoBehaviour {
+public class SceneRenderingManager : MonoBehaviour
+{
 
-	public static Bounds mapBound{
-		get{
-			return new Bounds(new Vector2(20,15),new Vector2(58,32));
-		}
-	}
+    public static Vector2 RandomPosition
+    {
+        get
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Vector2 p = new Vector2(Random.Range(ins.start.x, ins.end.x), Random.Range(ins.start.y, ins.end.y));
+                if (Physics2D.BoxCastAll(p, new Vector2(2, 2), 0, Vector2.right, 0.1f).Length == 0)
+                {
+                    return p;
+                }
+            }
+            return new Vector2(Random.Range(ins.start.x, ins.end.x), Random.Range(ins.start.y, ins.end.y));
+        }
+    }
 
-	public static Vector2 RandomPosition{
-		get{
-			for(int  i = 0;i < 10; i++){
-				Vector2 p = new Vector2(Random.value * mapBound.size.x,Random.value * mapBound.size.y) + (Vector2)mapBound.min;
-				if(Physics2D.BoxCastAll(p,new Vector2(2,2),0,Vector2.right,0.1f).Length == 0)
-				{
-					return p;
-				}
-			}
-			return new Vector2(Random.value * mapBound.size.x,Random.value * mapBound.size.x) + (Vector2)mapBound.min;
-		}
-	}
-
-	public Tilemap tm;
-	private static SceneRenderingManager ins;
-	// Use this for initialization
-	void Start () {
-		if(ins == null){
-			ins = this;
-		}else
+    private static SceneRenderingManager ins;
+    // Use this for initialization
+    [SerializeField]
+    private GameObject ground;
+    [SerializeField]
+	private Transform groundParent;
+    private Vector2 start;
+    [SerializeField]
+    private Vector2 end;
+    void Start()
+    {
+        if (ins == null)
+        {
+            ins = this;
+        }
+        else
+        {
+            Debug.LogErrorFormat("There is more than one SceneRenderingManager");
+        }
+        Debug.DrawLine(start, end, Color.red, 12f);
+        //// adjust ground
+        ground.transform.position = start;
+        ground.GetComponent<SpriteRenderer>().size = end - start;
+		groundParent = ground.transform.parent;
+		for (int i = 0; i < 10; i++)
 		{
-			Debug.LogErrorFormat("There is more than one SceneRenderingManager");
+			putRes("RSB_Stone");
+            putRes("RSB_Pool");
+            putRes("RSB_Water");
 		}
-		Debug.DrawLine(mapBound.min,mapBound.max,Color.red,12f);
-	}
+    }
+
+    private void putRes(string name)
+    {
+		GameObject go = ResourcesManager.RequireObject<GameObject>(name);
+		Instantiate<GameObject>(go,groundParent);
+		go.GetComponent<RSB>().init(SceneRenderingManager.RandomPosition, Random.Range(5,10));
+    }
 }

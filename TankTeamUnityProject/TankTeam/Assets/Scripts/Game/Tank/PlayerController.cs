@@ -2,8 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This Class based on TakController, make the actions responsed by keyboard and mouse
+/// </summary>
 public class PlayerController : TankController 
 {
+    /// <summary>
+    /// Maxspeed during moving
+    /// </summary>
     public float speed = 3f;
     private TeamInfo team;
 
@@ -44,6 +50,9 @@ public class PlayerController : TankController
         get{
             return speed;
         }
+        set{
+            speed = value;
+        }
     }
 
     protected override void Start () {
@@ -63,8 +72,8 @@ public class PlayerController : TankController
                 SendMessage("Action");
             }
         }
-        if(team.money >= 100){
-            BattleManager.BuyATank(team.id,"TankMissile");
-        }
+        // if(team.money >= 100){ // But Tank Auto
+        //     BattleManager.BuyATank(team.id,"TankMissile");
+        // }
 	}
 }

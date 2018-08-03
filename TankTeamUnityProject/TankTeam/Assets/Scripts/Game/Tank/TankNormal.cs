@@ -22,9 +22,9 @@ public class TankNormal : Tank
 		base.Start();
 	}
 
-  protected override void Action()
+    protected override void Action()
 	{
-		Debug.Log(string.Format("TankNormal:{0} Action!",name));
+		//Debug.Log(string.Format("TankNormal:{0} Action!",name));
   	}
 
   	protected override void Fire()
@@ -41,6 +41,6 @@ public class TankNormal : Tank
 
   	protected override void FirstShoot()
   	{
-		Debug.Log(string.Format("TankNormal:{0} FirstShoot!",name));
+		//Debug.Log(string.Format("TankNormal:{0} FirstShoot!",name));
   	}
 }
