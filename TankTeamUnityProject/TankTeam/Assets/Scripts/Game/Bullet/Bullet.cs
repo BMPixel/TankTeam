@@ -76,12 +76,10 @@ public class Bullet : MonoBehaviour {
 	public void Recycle()
 	{
 		gameObject.SetActive(false);
-		Debug.Log("the bullet has been recycled!");
 	}
 
 	static public Bullet GetBullet()
 	{
-		Debug.Log("Test");
 		foreach(Bullet b in pool){
 			if(!b.gameObject.activeInHierarchy)
 			{
