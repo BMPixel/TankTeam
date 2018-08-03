@@ -80,6 +80,7 @@ public class Bullet : MonoBehaviour {
 
 	static public Bullet GetBullet()
 	{
+		Debug.Log("Test");
 		foreach(Bullet b in pool){
 			if(!b.gameObject.activeInHierarchy)
 			{
