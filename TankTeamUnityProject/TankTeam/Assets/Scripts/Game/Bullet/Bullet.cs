@@ -76,6 +76,7 @@ public class Bullet : MonoBehaviour {
 	public void Recycle()
 	{
 		gameObject.SetActive(false);
+		Debug.Log("the bullet has been recycled!");
 	}
 
 	static public Bullet GetBullet()
