@@ -8,6 +8,10 @@ using UnityEngine;
 public class PlayerController : TankController 
 {
     /// <summary>
+    /// the enemy palyer like to attack
+    /// </summary>
+    private Queue<Tank> targetQueue;
+    /// <summary>
     /// Maxspeed during moving
     /// </summary>
     public float speed = 3f;
@@ -15,12 +19,57 @@ public class PlayerController : TankController
 
     public override Vector3 toward{
         get{
-            if(TouchController.tc.attackJoystick != null && TouchController.tc.attackJoystick.inputVector != Vector2.zero){
-                return ((TouchController.tc.attackJoystick.inputVector*8 +team.centerPoint) - (Vector2)transform.position).normalized;
+
+            /* By Mouse Position */
+            // if(TouchController.tc.attackJoystick != null && TouchController.tc.attackJoystick.inputVector != Vector2.zero){
+            //     return ((TouchController.tc.attackJoystick.inputVector*8 +team.centerPoint) - (Vector2)transform.position).normalized;
+            // }
+            // Vector2 mp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // return (mp - (Vector2)transform.position).normalized;
+
+            /* Automatical */
+            if(UpdateTarget()){
+                return (targetQueue.Peek().transform.position - transform.position).normalized;
+            }else{
+                return direction;
             }
-            Vector2 mp = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            return (mp - (Vector2)transform.position).normalized;
+            
         }
+    }
+
+    /// <summary>
+    /// Add new tank / Delete died tank
+    /// </summary>
+    /// <returns>Whether the targetQueue remains objs</returns>
+    public bool UpdateTarget ()
+    {
+        //TODO : replace 36
+        /* Clear some bad items */
+        while (targetQueue.Count > 0)
+        {
+            Tank t = targetQueue.Peek();
+            if (t == null || Vector2.SqrMagnitude(t.transform.position - transform.position) > 36)
+            {
+                targetQueue.Dequeue();
+                continue;
+            }
+            break;
+        }
+        /* New Detection */
+        if (targetQueue.Count == 0)
+        {
+            RaycastHit2D[] hit = Physics2D.CircleCastAll(transform.position, 6, Vector2.right, 0.01f, LayerMask.GetMask("Tank"));
+            foreach (var it in hit)
+            {
+                Tank tc = it.transform.GetComponent<Tank>();
+                if (tc && Vector2.SqrMagnitude(tc.transform.position - transform.position) < 36)
+                {
+                    targetQueue.Enqueue(tc);
+                }
+            }
+        }
+        
+        return targetQueue.Count > 0;
     }
 
     public override Vector3 direction{
@@ -57,6 +106,7 @@ public class PlayerController : TankController
 
     protected override void Start () {
 		base.Start();
+        targetQueue = new Queue<Tank>();
         Tank tank = GetComponent<Tank>();
         team = BattleManager.GetTeam(tank.teamId);
 	}
@@ -65,7 +115,7 @@ public class PlayerController : TankController
         base.Update();
         if(!isDied)
         {
-            if(Input.GetMouseButton(0)){
+            if(UpdateTarget()){
                 SendMessage("Fire");
             }
             if(Input.GetKeyDown(KeyCode.Space)){

@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: dbaf3da1e8ff04b4d9da8b97b4b4aadf
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 0
+  fontName: Mouse
+  fontNames:
+  - Mouse
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
