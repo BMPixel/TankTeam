@@ -65,7 +65,7 @@ public class Bullet : MonoBehaviour {
 			TeamInfo team = BattleManager.GetTeam(teamId);
 			if(t.HP > 0 && t.HP - damage <= 0 && team!=null){
 				team.kill++;
-				team.money += (int)(t.strenghIndex * 10);
+				team.money += (int)(t.strenghIndex * 15);
 			}
 			t.HP -= damage;
 		}

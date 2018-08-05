@@ -28,6 +28,7 @@ public class PlayerController : TankController
             // return (mp - (Vector2)transform.position).normalized;
 
             /* Automatical */
+            Debug.LogFormat("The count of queue for player {0}: {1}, the directions: {2}",name, targetQueue.Count, direction);
             if(UpdateTarget()){
                 return (targetQueue.Peek().transform.position - transform.position).normalized;
             }else{
@@ -48,7 +49,7 @@ public class PlayerController : TankController
         while (targetQueue.Count > 0)
         {
             Tank t = targetQueue.Peek();
-            if (t == null || Vector2.SqrMagnitude(t.transform.position - transform.position) > 36)
+            if (t == null || Vector2.SqrMagnitude(t.transform.position - transform.position) > 36 || t.HP <= 0)
             {
                 targetQueue.Dequeue();
                 continue;
@@ -62,7 +63,7 @@ public class PlayerController : TankController
             foreach (var it in hit)
             {
                 Tank tc = it.transform.GetComponent<Tank>();
-                if (tc && Vector2.SqrMagnitude(tc.transform.position - transform.position) < 36)
+                if (tc && tc.teamId != team.id && Vector2.SqrMagnitude(tc.transform.position - transform.position) < 36 && tc.HP >0)
                 {
                     targetQueue.Enqueue(tc);
                 }
